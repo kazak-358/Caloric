@@ -6,7 +6,7 @@ if NOT "%1"=="" goto OK
 @ECHO USAGE:
 @ECHO   instal_db ConnStr 
 @ECHO WHERE:
-@ECHO   ConnStr - Connect String To OWNER of IB System Object.
+@ECHO   ConnStr - Connect String
 @ECHO EXAMPLE:
 @ECHO   INSTAL_DB USER/PASS@ORCL 
 exit

@@ -6,3 +6,5 @@ truncate table manufacturer;
 
 drop table product;
 drop table manufacturer;
+
+exit

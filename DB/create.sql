@@ -2,9 +2,9 @@ create table product(
 id number primary key,
 name varchar2(100) unique not null,
 caloric number(5) not null check (caloric >0),
-protein number(2) default 0 not null check (protein >=0 and protein <100),
-fat number(2) default 0 not null check (fat >=0 and fat < 100),
-carbohydrates number(2) default 0 not null check (carbohydrates >=0 and carbohydrates < 100),
+protein number(3,1) default 0 not null check (protein >=0 and protein <100),
+fat number(3,1) default 0 not null check (fat >=0 and fat < 100),
+carbohydrates number(3,1) default 0 not null check (carbohydrates >=0 and carbohydrates < 100),
 check (protein + fat + carbohydrates <= 100) 
 );
 

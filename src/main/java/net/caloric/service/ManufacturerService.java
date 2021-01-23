@@ -15,4 +15,6 @@ public interface ManufacturerService {
 	boolean update(Manufacturer manufacturer, String name);
 
 	boolean delete(long id);
+
+	public List<Manufacturer> search(String keyword);
 }

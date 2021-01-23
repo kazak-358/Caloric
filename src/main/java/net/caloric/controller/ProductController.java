@@ -16,16 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 import net.caloric.model.Product;
 import net.caloric.service.ProductService;
 
-
 @RestController
 public class ProductController {
 
 	private final ProductService productService;
 
-   @Autowired
+	@Autowired
 	public ProductController(ProductService productService) {
 		this.productService = productService;
-   }
+	}
 
 	@PostMapping(value = "/products")
 	public ResponseEntity<?> create(@RequestBody Product product) {

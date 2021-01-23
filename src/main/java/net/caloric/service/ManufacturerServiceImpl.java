@@ -51,4 +51,9 @@ public class ManufacturerServiceImpl implements ManufacturerService {
 		}
 		return false;
 	}
+
+	public List<Manufacturer> search(String keyword) {
+		return manufacturerRepository.search(keyword);
+	}
+
 }

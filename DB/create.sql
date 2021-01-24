@@ -21,3 +21,6 @@ primary key (id_manufacturer, id_product)
 
 alter table manufacturer_product add constraint FK_MANUFACTURER foreign key (id_manufacturer) references manufacturer;
 alter table manufacturer_product add constraint FK_PRODUCT foreign key (id_product) references product;
+
+create sequence caloric_seq start with 1 increment by 1;
+

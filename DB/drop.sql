@@ -7,4 +7,6 @@ truncate table manufacturer;
 drop table product;
 drop table manufacturer;
 
+drop sequence caloric_seq;
+
 exit

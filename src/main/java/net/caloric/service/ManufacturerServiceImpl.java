@@ -17,13 +17,9 @@ public class ManufacturerServiceImpl implements ManufacturerService {
 	private ManufacturerRepository manufacturerRepository;
 
 	@Override
-	public void create(Manufacturer manufacturer) {
-		manufacturerRepository.save(manufacturer);
-	}
-
-	@Override
 	public List<Manufacturer> readAll() {
-		return manufacturerRepository.findAll().stream().sorted(Comparator.comparing(Manufacturer::getId))
+		return manufacturerRepository.findAll().stream().sorted(Comparator.comparing(
+				Manufacturer::getName))
 				.collect(Collectors.toList());
 	}
 
@@ -33,14 +29,8 @@ public class ManufacturerServiceImpl implements ManufacturerService {
 	}
 
 	@Override
-	public boolean update(Manufacturer manufacturer, String name) {
-		if (manufacturerRepository.existsById(manufacturer.getId())) {
-			manufacturer.setName(name);
-			manufacturerRepository.save(manufacturer);
-			return true;
-		}
-
-		return false;
+	public Manufacturer save(Manufacturer manufacturer) {
+		return manufacturerRepository.save(manufacturer);
 	}
 
 	@Override

@@ -6,15 +6,13 @@ import net.caloric.model.Manufacturer;
 
 public interface ManufacturerService {
 
-	void create(Manufacturer manufacturer);
+	public List<Manufacturer> readAll();
 
-	List<Manufacturer> readAll();
+	public Manufacturer read(long id);
 
-	Manufacturer read(long id);
-
-	boolean update(Manufacturer manufacturer, String name);
-
-	boolean delete(long id);
+	public boolean delete(long id);
 
 	public List<Manufacturer> search(String keyword);
+
+	public Manufacturer save(Manufacturer manufacturer);
 }

@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="/resources/css/style.css">
 <script type="text/javascript" src="/resources/js/app.js"></script>
 
-<title>Spring Boot</title>
+<title>Caloric application</title>
 </head>
 <body>
   <h1>Caloric application</h1>

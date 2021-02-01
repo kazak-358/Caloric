@@ -1,9 +1,18 @@
 package net.caloric.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "product")
@@ -26,6 +35,11 @@ public class Product {
 
 	@Column(name = "carbohydrates")
 	private double carbohydrates;
+
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "manufacturer_product", joinColumns = @JoinColumn(name = "id_product", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "id_manufacturer", referencedColumnName = "id"))
+	@JsonManagedReference
+	private Set<Manufacturer> manufacturers = new HashSet<>();
 
 	public Long getId() {
 		return id;
@@ -75,4 +89,11 @@ public class Product {
 		this.carbohydrates = carbohydrates;
 	}
 
+	public Set<Manufacturer> getManufacturers() {
+		return manufacturers;
+	}
+
+	public void setManufacturers(Set<Manufacturer> manufacturers) {
+		this.manufacturers = manufacturers;
+	}
 }

@@ -18,12 +18,14 @@
         <tr>
             <th>ID</th>
             <th>Name</th>
+            <th>Products</th>
             <th>Action</th>
         </tr>
         <c:forEach items="${listManufacturer}" var="manufacturer">
         <tr>
             <td>${manufacturer.id}</td>
             <td>${manufacturer.name}</td>
+            <td>${manufacturer.products.size()}</td>
             <td>
                 <a href="/manufacturers/edit?id=${manufacturer.id}">Edit</a>
                    

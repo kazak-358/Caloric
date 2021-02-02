@@ -2,17 +2,19 @@ package net.caloric.service;
 
 import java.util.List;
 
-import net.caloric.model.Product;
+import net.caloric.dto.ProductDto;
 
 public interface ProductService {
 
-	void create(Product product);
+	public void create(ProductDto product);
 
-	List<Product> readAll();
+	public List<ProductDto> readAll();
 
-	Product read(long id);
+	public ProductDto read(Long id);
 
-	boolean update(Product product, String name);
+	public ProductDto update(Long id, ProductDto productDto);
 
-	boolean delete(long id);
+	public boolean delete(Long id);
+
+	public List<ProductDto> search(String keyword);
 }

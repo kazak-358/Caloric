@@ -96,4 +96,21 @@ public class Product {
 	public void setManufacturers(Set<Manufacturer> manufacturers) {
 		this.manufacturers = manufacturers;
 	}
+
+	public void addManufacturer(Manufacturer manufacturer) {
+		manufacturers.add(manufacturer);
+		manufacturer.getProducts().add(this);
+	}
+
+	public void removeManufacturer(Manufacturer manufacturer) {
+		manufacturers.remove(manufacturer);
+		manufacturer.getProducts().remove(this);
+	}
+
+	public void removeManufacturers() {
+		for (Manufacturer manufacturer : new HashSet<>(manufacturers)) {
+			removeManufacturer(manufacturer);
+		}
+	}
+
 }

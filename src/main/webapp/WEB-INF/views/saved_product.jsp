@@ -4,10 +4,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Error saved Manufacturer</title>
+<title>Saved Product</title>
 </head>
 <body>
-	<h2>Error saved Manufacturer</h2>
-	<a href="/manufacturers">Back to Manufacturers</a>
+	 <h2>Product was saved</h2>
+	 <a href="/products">Back to Products</a>
 </body>
 </html>

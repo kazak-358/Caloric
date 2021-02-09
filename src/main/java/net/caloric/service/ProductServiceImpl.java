@@ -1,13 +1,11 @@
 package net.caloric.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,50 +26,69 @@ public class ProductServiceImpl implements ProductService {
 	private ManufacturerRepository manufacturerRepository;
 
 	@Override
-	public void create(ProductDto productDto) {
-		Product product = new Product();
-		mapDtoToEntity(productDto, product);
-		productRepository.save(product);
-	}
-
-	@Override
 	public List<ProductDto> readAll() {
 		List<ProductDto> productDtos = new ArrayList<>();
 		productRepository.findAll().stream().sorted(Comparator.comparing(
-				Product::getId)).forEach(product -> productDtos.add(mapEntityToDto(product)));
+				Product::getId)).forEach(product -> productDtos.addAll(mapEntityToDtos(product)));
 		return productDtos;
 	}
 
 	@Override
-	public ProductDto read(Long id) {
-		return mapEntityToDto(productRepository.getOne(id));
+	public ProductDto read(Long pid, Long mid) {
+		return mapEntityToDtos(productRepository.getOne(pid)).stream().filter(product -> product.getManufacturerId()
+				.equals(mid))
+				.findFirst().orElse(null);
+
 	}
 
 	@Override
-	public ProductDto update(Long id, ProductDto productDto) {
-		Product product = productRepository.getOne(id);
-		product.getManufacturers().clear();
+	public ProductDto save(ProductDto productDto) {
+		Product product = null;
+		if (productDto.getId() == null) {
+			product = new Product();
+		} else {
+			// TODO обработать если удален
+			product = productRepository.findById(productDto.getId()).orElse(new Product());
+		}
 		mapDtoToEntity(productDto, product);
-		return mapEntityToDto(productRepository.save(product));
+		product = productRepository.save(product);
+		return productDto; // TODO по хорошему надо вытащить новый productDto из product
 	}
 
 	@Override
-	public boolean delete(Long id) {
-		Optional<Product> product = productRepository.findById(id);
-		if (product.isPresent()) {
-			product.get().removeManufacturers();
-			productRepository.deleteById(product.get().getId());
-			return true;
+	public boolean delete(Long pid, Long mid) {
+		// удаляем связь продукт-производитель
+		Product product = productRepository.findById(pid).orElse(null);
+		if (product != null){
+			Manufacturer manufacturer = product.getManufacturers().stream().filter(item -> item.getId().equals(mid)).findFirst()
+					.orElse(null);
+			if (manufacturer != null) {
+				product.removeManufacturer(manufacturer);
+				productRepository.save(product);
+				return true;
+			}
 		}
 		return false;
 	}
 
 	@Override
-	public List<ProductDto> search(String keyword) {
-		List<ProductDto> productDtos = new ArrayList<>();
-		productRepository.search(keyword).stream().forEach(product -> productDtos.add(mapEntityToDto(product)));
-		return productDtos;
+	public boolean delete(Long pid) {
+		// удаляем продукт целиком
+		Product product = productRepository.findById(pid).orElse(null);
+		if (product != null) {
+			product.removeManufacturers();
+			productRepository.delete(product);
+			return true;
+		}
+		return false;
 	}
+
+//	@Override
+//	public List<ProductDto> search(String keyword) {
+//		List<ProductDto> productDtos = new ArrayList<>();
+//		productRepository.search(keyword).stream().forEach(product -> productDtos.add(mapEntityToDto(product)));
+//		return productDtos;
+//	}
 
 	private void mapDtoToEntity(ProductDto productDto, Product product) {
 		product.setName(productDto.getName());
@@ -83,31 +100,45 @@ public class ProductServiceImpl implements ProductService {
 		if (product.getManufacturers() == null) {
 			product.setManufacturers(new HashSet<>());
 		}
-		productDto.getManufacturers().stream().forEach(manufacturerName -> {
-			Manufacturer manufacturer = manufacturerRepository.findByName(manufacturerName);
-			if (manufacturer == null) {
-				manufacturer = new Manufacturer();
+		// есть ли новый производитель в коллекции
+		Optional<Manufacturer> optNewManufacturer = product.getManufacturers()
+				.stream()
+				.filter(man -> man.getName().equals(productDto.getManufacturerName())).findFirst();
+
+		Manufacturer oldManufacturer = product.getManufacturers().stream()
+				.filter(man -> man.getId().equals(productDto.getManufacturerId())).findFirst().orElse(null);
+
+		// выбрали нового производителя
+		if (!optNewManufacturer.isPresent()) {
+			Manufacturer newManufacturer = manufacturerRepository.findByName(productDto.getManufacturerName());
+			product.addManufacturer(newManufacturer);
+			if (oldManufacturer != null) {
+				product.removeManufacturer(oldManufacturer);
 			}
-			manufacturer.setName(manufacturerName);
-			product.addManufacturer(manufacturer);
-		});
+		} else if (!optNewManufacturer.get().getId().equals(productDto.getManufacturerId())) {
+			// поменяли производителя на того который уже есть в списке => удалить старого
+			product.removeManufacturer(oldManufacturer);
+		}
 	}
 
-	private ProductDto mapEntityToDto(Product product) {
-		if (product == null) {
-			return null;
+	private List<ProductDto> mapEntityToDtos(Product product) {
+		if (product == null || product.getManufacturers().isEmpty()) {
+			return Collections.emptyList();
 		}
-		ProductDto productDto = new ProductDto();
-		productDto.setName(product.getName());
-		productDto.setId(product.getId());
-		productDto.setCaloric(product.getCaloric());
-		productDto.setCarbohydrates(product.getCarbohydrates());
-		productDto.setFat(product.getFat());
-		productDto.setProtein(product.getProtein());
-
-		productDto
-				.setManufacturers(product.getManufacturers().stream().map(Manufacturer::getName).collect(Collectors.toSet()));
-		return productDto;
+		List<ProductDto> productDtos = new ArrayList<>();
+		product.getManufacturers().forEach(manufacturer -> {
+			ProductDto productDto = new ProductDto();
+			productDto.setName(product.getName());
+			productDto.setId(product.getId());
+			productDto.setCaloric(product.getCaloric());
+			productDto.setCarbohydrates(product.getCarbohydrates());
+			productDto.setFat(product.getFat());
+			productDto.setProtein(product.getProtein());
+			productDto.setManufacturerId(manufacturer.getId());
+			productDto.setManufacturerName(manufacturer.getName());
+			productDtos.add(productDto);
+		});
+		return productDtos;
 	}
 
 }

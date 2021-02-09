@@ -1,7 +1,5 @@
 package net.caloric.dto;
-import java.util.HashSet;
-import java.util.Set;
- 
+
 public class ProductDto {
 	private Long id;
 	private String name;
@@ -9,7 +7,8 @@ public class ProductDto {
 	private double protein;
 	private double fat;
 	private double carbohydrates;
-	private Set<String> manufacturers = new HashSet<>();
+	private Long manufacturerId;
+	private String manufacturerName;
 
 	public Long getId() {
 		return id;
@@ -59,12 +58,20 @@ public class ProductDto {
 		this.carbohydrates = carbohydrates;
 	}
 
-	public Set<String> getManufacturers() {
-		return manufacturers;
+	public Long getManufacturerId() {
+		return manufacturerId;
 	}
 
-	public void setManufacturers(Set<String> manufacturers) {
-		this.manufacturers = manufacturers;
+	public void setManufacturerId(Long manufacturerId) {
+		this.manufacturerId = manufacturerId;
+	}
+
+	public String getManufacturerName() {
+		return manufacturerName;
+	}
+
+	public void setManufacturerName(String manufacturerName) {
+		this.manufacturerName = manufacturerName;
 	}
 
 }

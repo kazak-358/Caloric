@@ -22,10 +22,6 @@ import net.caloric.service.ManufacturerService;
 @RestController
 public class ManufacturerController {
 
-	private static final ResponseEntity<?> CREATED_RESPONSE = new ResponseEntity<>(HttpStatus.CREATED);
-	private static final ResponseEntity<?> OK_RESPONSE = new ResponseEntity<>(HttpStatus.OK);
-	private static final ResponseEntity<?> NOT_MODIFIED_RESPONSE = new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-
 	private final ManufacturerService manufacturerService;
 
 	@Autowired
@@ -58,7 +54,7 @@ public class ManufacturerController {
 			manufacturerService.save(manufacturer);
 			mav = new ModelAndView("saved_manufacturer");
 		} catch (Exception e) {
-			mav = new ModelAndView("error_manufacturer");
+			mav = new ModelAndView("error");
 		}
 		return mav;
 	}
@@ -82,16 +78,16 @@ public class ManufacturerController {
 
 	@RequestMapping(value = "/manufacturers/delete")
 	public ResponseEntity<?> delete(@RequestParam long id) {
-		return manufacturerService.delete(id) ? OK_RESPONSE : NOT_MODIFIED_RESPONSE;
+		return manufacturerService.delete(id) ? ControllerConstants.OK_RESPONSE : ControllerConstants.NOT_MODIFIED_RESPONSE;
 	}
 
 	@PostMapping(value = "/manufacturers")
 	public ResponseEntity<?> jsonCreate(@RequestBody Manufacturer manufacturer) {
 		try {
 			manufacturerService.save(manufacturer);
-			return CREATED_RESPONSE;
+			return ControllerConstants.CREATED_RESPONSE;
 		} catch (Exception e) {
-			return NOT_MODIFIED_RESPONSE;
+			return ControllerConstants.NOT_MODIFIED_RESPONSE;
 		}
 	}
 
@@ -99,18 +95,19 @@ public class ManufacturerController {
 	public ResponseEntity<?> jsonUpdate(@RequestBody Manufacturer manufacturer) {
 		try {
 			manufacturerService.save(manufacturer);
-			return OK_RESPONSE;
+			return ControllerConstants.OK_RESPONSE;
 		} catch (Exception e) {
-			return NOT_MODIFIED_RESPONSE;
+			return ControllerConstants.NOT_MODIFIED_RESPONSE;
 		}
 	}
 
 	@DeleteMapping(value = "/manufacturers")
 	public ResponseEntity<?> jsonDelete(@RequestBody Manufacturer manufacturer) {
 		try {
-			return manufacturerService.delete(manufacturer.getId()) ? OK_RESPONSE : NOT_MODIFIED_RESPONSE;
+			return manufacturerService.delete(manufacturer.getId()) ? ControllerConstants.OK_RESPONSE
+					: ControllerConstants.NOT_MODIFIED_RESPONSE;
 		} catch (Exception e) {
-			return NOT_MODIFIED_RESPONSE;
+			return ControllerConstants.NOT_MODIFIED_RESPONSE;
 		}
 	}
 

@@ -6,15 +6,15 @@ import net.caloric.dto.ProductDto;
 
 public interface ProductService {
 
-	public void create(ProductDto product);
-
 	public List<ProductDto> readAll();
 
-	public ProductDto read(Long id);
+	public ProductDto read(Long pid, Long mid);
 
-	public ProductDto update(Long id, ProductDto productDto);
+	public ProductDto save(ProductDto productDto);
 
-	public boolean delete(Long id);
+	public boolean delete(Long pid);
 
-	public List<ProductDto> search(String keyword);
+	public boolean delete(Long pid, Long mid);
+
+//	public List<ProductDto> search(String keyword);
 }
